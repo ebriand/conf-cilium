@@ -1,0 +1,33 @@
+- hosts:
+  - controller.0
+  remote_user: "{{ instance_user }}"
+  vars:
+    ansible_ssh_private_key_file: "./kube_rsa"
+  vars_files:
+    - common-vars.yml
+  gather_facts: no
+  become: yes
+  tasks:
+  - name: Test kubeadm already run
+    systemd: 
+      name: kubelet
+    register: kubelet_status
+  - name: Init cluster
+    command: kubeadm init --pod-network-cidr "{{ pod_cidr }}"
+    when: kubelet_status.status["SubState"] != "running"
+  - name: Create ~/.kube
+    file:
+      path: /home/{{ instance_user }}/.kube
+      state: directory
+      mode: 0755    
+  - name: Configure kubectl
+    copy:
+      src: /etc/kubernetes/admin.conf
+      dest: /home/{{ instance_user }}/.kube/config
+      remote_src: yes
+  - file:
+      path: /home/{{ instance_user }}/.kube/config
+      owner: "{{ instance_user }}"
+      mode: 0600      
+    
+    

@@ -1,0 +1,25 @@
+- name: run the playbook tasks on the localhost
+  hosts: localhost
+  connection: local
+  vars_files:
+    - common-vars.yml
+  tasks:
+  - name: Check that key pair exists
+    stat:
+      path: ./kube_rsa
+    register: stat_result
+  - name: generate key pair
+    command: ssh-keygen -t rsa -N "" -f kube_rsa
+    when: stat_result.stat.exists == False 
+  - name: create infra
+    terraform:
+      project_path: './infra'
+      force_init: true
+      state: present
+      variables:
+        gce_zone: "{{ gcp_zone }}"
+        gce_ssh_user: "{{ instance_user }}"
+        gce_ssh_pub_key_file: ../kube_rsa.pub
+        worker_count: "{{ worker_count }}"
+  - shell: terraform-inventory --inventory infra/terraform.tfstate > inventory.cfg
+  
