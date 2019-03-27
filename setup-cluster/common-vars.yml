@@ -1,0 +1,10 @@
+instance_user: ubuntu
+docker_version: "18.06.3~ce~3-0~ubuntu"
+kubernetes_version_ubuntu: "1.14.0-00"
+kubernetes_version_kubeadm: "v1.14.0"
+vm_preemptible: "true"
+gcp_zone: "europe-west1-c"
+pod_cidr: "192.168.0.0/16"
+networking_addon_url: "https://raw.githubusercontent.com/cilium/cilium/v1.4/examples/kubernetes/1.14/cilium.yaml"
+networking_addon_name: "cilium"
+worker_count: "3"

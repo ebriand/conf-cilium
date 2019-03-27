@@ -1,0 +1,15 @@
+- name: run the playbook tasks on the localhost
+  hosts: localhost
+  connection: local
+  vars_files:
+    - common-vars.yml
+  tasks:
+  - name: delete infra
+    terraform:
+      project_path: './infra'
+      force_init: true
+      state: absent
+      variables:
+        gce_zone: "{{ gcp_zone }}"
+        gce_ssh_user: "{{ instance_user }}"
+        gce_ssh_pub_key_file: ../kube_rsa.pub
