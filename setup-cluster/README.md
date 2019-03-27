@@ -2,6 +2,8 @@
 
 ansible + terraform to bootstrap a 1 controller + 3 worker kubernetes cluster
 
+You should be able to use this once you're logged on GCP with `gcloud auth login` or directly on Google Cloud Shell.
+
 ## Pre-requisites
 
 - You must install `ansible`
