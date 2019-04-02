@@ -65,7 +65,7 @@ func HeroHandler(w http.ResponseWriter, r *http.Request) {
 	hero, err := getHeroByName(name)
 	if err != nil {
 		fmt.Println(err)
-		w.WriteHeader(http.StatusNotFound)
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -76,18 +76,27 @@ func IdentitiesHandler(w http.ResponseWriter, r *http.Request) {
 	idString := mux.Vars(r)["identityID"]
 	id, err := strconv.Atoi(idString)
 	if err != nil {
-		fmt.Printf("Identity id %s not an integer", idString)
-		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Print(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	identity, err := getIdentityByID(id)
 	if err != nil {
 		fmt.Println(err)
-		w.WriteHeader(http.StatusNotFound)
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(identity)
+}
+
+func HealthHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func ReadyHandler(w http.ResponseWriter, r *http.Request) {
+	//TODO: check kafka connection
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func main() {
@@ -95,6 +104,8 @@ func main() {
 	r.HandleFunc("/heroes", HeroesHandler).Methods("GET")
 	r.HandleFunc("/heroes/{name}", HeroHandler).Methods("GET")
 	r.HandleFunc("/identities/{identityID:[0-9]+}", IdentitiesHandler).Methods("GET")
+	r.HandleFunc("/health", HealthHandler).Methods("GET")
+	r.HandleFunc("/ready", ReadyHandler).Methods("GET")
 	http.Handle("/", r)
 	http.ListenAndServe(":80", nil)
 }
