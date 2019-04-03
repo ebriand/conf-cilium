@@ -13,7 +13,7 @@
       name: kubelet
     register: kubelet_status
   - name: Init cluster
-    command: kubeadm init --pod-network-cidr "{{ pod_cidr }}"
+    command: kubeadm init --pod-network-cidr "{{ pod_cidr }}" --apiserver-cert-extra-sans "{{ inventory_hostname }}"
     when: kubelet_status.status["SubState"] != "running"
   - name: Create ~/.kube
     file:
