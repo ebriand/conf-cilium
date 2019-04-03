@@ -1,16 +1,17 @@
-package main;
+package main
 
 import (
-	"os"
 	"fmt"
+	"os"
+
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
 func main() {
-	kafka_host := os.Getenv("KAFKA_HOST")
-	kafka_topic := os.Getenv("KAFKA_TOPIC")
+	kafkaHost := os.Getenv("KAFKA_HOST")
+	kafkaTopic := os.Getenv("KAFKA_TOPIC")
 
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": kafka_host})
+	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": kafkaHost})
 	if err != nil {
 		panic(err)
 	}

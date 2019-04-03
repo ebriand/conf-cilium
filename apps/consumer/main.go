@@ -1,19 +1,20 @@
-package main;
+package main
 
 import (
 	"fmt"
-	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"os"
+
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
 func main() {
-	kafka_host := os.Getenv("KAFKA_HOST")
-	kafka_group := os.Getenv("KAFKA_GROUP")
-	kafka_topic := os.Getenv("KAFKA_TOPIC")
+	kafkaHost := os.Getenv("KAFKA_HOST")
+	kafkaGroup := os.Getenv("KAFKA_GROUP")
+	kafkaTopic := os.Getenv("KAFKA_TOPIC")
 
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": kafka_host,
-		"group.id": kafka_group,
+		"bootstrap.servers": kafkaHost,
+		"group.id":          kafkaGroup,
 		"auto.offset.reset": "earliest",
 	})
 
@@ -21,7 +22,7 @@ func main() {
 		panic(err)
 	}
 
-	c.SubscribeTopics([]string{kafka_topic, "^aRegex.*[Tt]opic"}, nil)
+	c.SubscribeTopics([]string{kafkaTopic, "^aRegex.*[Tt]opic"}, nil)
 
 	for {
 		msg, err := c.ReadMessage(-1)
@@ -35,4 +36,3 @@ func main() {
 
 	c.Close()
 }
-
