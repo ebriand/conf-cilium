@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
@@ -156,6 +157,12 @@ func syncHeroesFromKafka() {
 			}
 		}
 	}()
+}
+
+func init() {
+	if kafkaHost := os.Getenv("KAFKA_BROKERS"); kafkaHost != "" {
+		brokers = kafkaHost
+	}
 }
 
 func main() {

@@ -18,6 +18,12 @@ var (
 	topics  = "heroes"
 )
 
+func init() {
+	if kafkaHost := os.Getenv("KAFKA_BROKERS"); kafkaHost != "" {
+		brokers = kafkaHost
+	}
+}
+
 func main() {
 	version, err := sarama.ParseKafkaVersion(version)
 	if err != nil {
