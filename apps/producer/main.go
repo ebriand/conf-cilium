@@ -1,46 +1,65 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"os"
+	"log"
 
-	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/Shopify/sarama"
 )
 
-func main() {
-	kafkaHost := os.Getenv("KAFKA_HOST")
-	kafkaTopic := os.Getenv("KAFKA_TOPIC")
+type Hero struct {
+	Name             string `json:"name"`
+	SecretIdentityID int    `json:"secretIdentityID"`
+}
 
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": kafkaHost})
+var heroes = []Hero{
+	{"batman", 1},
+	{"superman", 2},
+}
+
+func newDataCollector(brokerList []string) sarama.SyncProducer {
+
+	// For the data collector, we are looking for strong consistency semantics.
+	// Because we don't change the flush settings, sarama will try to produce messages
+	// as fast as possible to keep latency low.
+	config := sarama.NewConfig()
+	config.Producer.RequiredAcks = sarama.WaitForAll // Wait for all in-sync replicas to ack the message
+	config.Producer.Retry.Max = 10                   // Retry up to 10 times to produce the message
+	config.Producer.Return.Successes = true
+
+	// On the broker side, you may want to change the following settings to get
+	// stronger consistency guarantees:
+	// - For your broker, set `unclean.leader.election.enable` to false
+	// - For the topic, you could increase `min.insync.replicas`.
+
+	producer, err := sarama.NewSyncProducer(brokerList, config)
 	if err != nil {
-		panic(err)
+		log.Fatalln("Failed to start Sarama producer:", err)
 	}
 
-	defer p.Close()
+	return producer
+}
 
-	// Delivery report handler for produced messages
-	go func() {
-		for e := range p.Events() {
-			switch ev := e.(type) {
-			case *kafka.Message:
-				if ev.TopicPartition.Error != nil {
-					fmt.Printf("Delivery failed: %v\n", ev.TopicPartition)
-				} else {
-					fmt.Printf("Delivered message to %v\n", ev.TopicPartition)
-				}
-			}
+func main() {
+	producer := newDataCollector([]string{"localhost:9092"})
+
+	fmt.Println("Simple kafka producer")
+	fmt.Println("---------------------")
+
+	for _, h := range heroes {
+		jsonMsg, err := json.Marshal(h)
+		if err != nil {
+			panic(err)
 		}
-	}()
-
-	// Produce messages to topic (asynchronously)
-	topic := kafka_topic
-	for _, word := range []string{"Welcome", "to", "the", "Confluent", "Kafka", "Golang", "client"} {
-		p.Produce(&kafka.Message{
-			TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
-			Value:          []byte(word),
-		}, nil)
+		_, _, err = producer.SendMessage(&sarama.ProducerMessage{
+			Topic: "heroes",
+			Value: sarama.StringEncoder(jsonMsg),
+		})
+		if err != nil {
+			fmt.Printf("Error: %v\n", err)
+		} else {
+			fmt.Printf("%s written\n", jsonMsg)
+		}
 	}
-
-	// Wait for message deliveries before shutting down
-	p.Flush(15 * 1000)
 }
