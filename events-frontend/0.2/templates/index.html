@@ -1,0 +1,21 @@
+<html>
+<body>
+<ul>Events:
+{{range .Events}}
+  <li><a href="/events/{{.ID}}">{{.Name}}</a></li>
+{{end}}
+</ul>
+<form action="/events" method="POST">
+  <label for="name"><b>Event name</b></label>
+  <input type="text" placeholder="Enter event name" name="name" required>
+
+  <select name="heroes" multiple>
+  {{range .Heroes}}
+    <option value="{{.}}">{{.}}</option>
+  {{end}}
+  </select>
+
+  <button type="submit">add</button>
+</form>
+</body>
+</html>

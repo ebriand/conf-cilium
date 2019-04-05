@@ -2,24 +2,24 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: internal-frontend
-    team: internal
-  name: internal-frontend
-  namespace: internal
+    app: events-frontend
+    team: events
+  name: events-frontend
+  namespace: events
 spec:
   selector:
     matchLabels:
-      app: internal-frontend
-      team: internal
+      app: events-frontend
+      team: events
   template:
     metadata:
       labels:
-        app: internal-frontend
-        team: internal
+        app: events-frontend
+        team: events
     spec:
       containers:
-      - name: internal-frontend
-        image: ebriand/conf-cilium-internal-frontend:0.1
+      - name: events-frontend
+        image: ebriand/conf-cilium-events-frontend:0.1
         imagePullPolicy: Always
         ports:
         - containerPort: 80

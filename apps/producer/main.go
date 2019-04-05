@@ -7,16 +7,17 @@ import (
 
 	"github.com/Shopify/sarama"
 	"github.com/ebriand/conf-cilium/types"
+	"github.com/google/uuid"
 )
 
 var heroes = []types.Hero{
-	{"batman", 1},
-	{"superman", 2},
+	{"batman", uuid.Must(uuid.Parse("38bdf3f3-3a4d-4786-86bc-91f20860d804"))},
+	{"superman", uuid.Must(uuid.Parse("ae9ac595-da8f-4089-8ba1-c8bcb5dd6b01"))},
 }
 
 var identities = []types.Identity{
-	{1, "Bruce Wayne"},
-	{2, "Kalel"},
+	{uuid.Must(uuid.Parse("38bdf3f3-3a4d-4786-86bc-91f20860d804")), "Bruce Wayne"},
+	{uuid.Must(uuid.Parse("38bdf3f3-3a4d-4786-86bc-91f20860d804")), "Kalel"},
 }
 
 func newDataCollector(brokerList []string) sarama.SyncProducer {

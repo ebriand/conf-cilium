@@ -1,11 +1,13 @@
 package types
 
+import "github.com/google/uuid"
+
 type Hero struct {
-	Name             string `json:"name"`
-	SecretIdentityID int    `json:"secretIdentityID"`
+	Name             string    `json:"name"`
+	SecretIdentityID uuid.UUID `json:"secretIdentityID"`
 }
 
 type Identity struct {
-	ID       int    `json:"id"`
-	RealName string `json:"realName"`
+	ID       uuid.UUID `json:"id"`
+	RealName string    `json:"realName"`
 }

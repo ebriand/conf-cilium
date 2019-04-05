@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/Shopify/sarama"
 	"github.com/ebriand/conf-cilium/types"
+	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 )
 
@@ -46,7 +46,7 @@ func getHeroByName(name string) (*types.Hero, error) {
 	return nil, fmt.Errorf("hero %s not found", name)
 }
 
-func getIdentityByID(id int) (*types.Identity, error) {
+func getIdentityByID(id uuid.UUID) (*types.Identity, error) {
 	for _, i := range identities {
 		if id == i.ID {
 			return &i, nil
@@ -74,7 +74,7 @@ func HeroHandler(w http.ResponseWriter, r *http.Request) {
 
 func IdentitiesHandler(w http.ResponseWriter, r *http.Request) {
 	idString := mux.Vars(r)["identityID"]
-	id, err := strconv.Atoi(idString)
+	id, err := uuid.Parse(idString)
 	if err != nil {
 		fmt.Print(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -148,7 +148,7 @@ func syncIdentitiesFromKafka() {
 			if err != nil {
 				fmt.Printf("Unable to parse msg: %v\n", message.Value)
 			} else {
-				fmt.Printf("Adding identity: %v", i)
+				fmt.Printf("Adding identity: %v\n", i)
 				identities = append(identities, i)
 			}
 		}
@@ -167,7 +167,7 @@ func syncHeroesFromKafka() {
 			if err != nil {
 				fmt.Printf("Unable to parse msg: %v\n", message.Value)
 			} else {
-				fmt.Printf("Adding hero: %v", h)
+				fmt.Printf("Adding hero: %v\n", h)
 				heroes = append(heroes, h)
 			}
 		}
@@ -186,7 +186,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/heroes", HeroesHandler).Methods("GET")
 	r.HandleFunc("/heroes/{name}", HeroHandler).Methods("GET")
-	r.HandleFunc("/identities/{identityID:[0-9]+}", IdentitiesHandler).Methods("GET")
+	r.HandleFunc("/identities/{identityID}", IdentitiesHandler).Methods("GET")
 	r.HandleFunc("/health", HealthHandler).Methods("GET")
 	r.HandleFunc("/ready", ReadyHandler).Methods("GET")
 	http.Handle("/", r)

@@ -1,0 +1,18 @@
+<html>
+<body>
+<ul>Heroes:
+{{range .Heroes}}
+  <li><a href="/heroes/{{.}}">{{.}}</a></li>
+{{end}}
+</ul>
+<form action="/heroes" method="POST">
+  <label for="name"><b>Name</b></label>
+  <input type="text" placeholder="Enter name" name="name" required>
+
+  <label for="identity"><b>Identity</b></label>
+  <input type="password" placeholder="Enter identity" name="identity" required>
+
+  <button type="submit">add</button>
+</form>
+</body>
+</html>
