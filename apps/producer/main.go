@@ -13,9 +13,19 @@ type Hero struct {
 	SecretIdentityID int    `json:"secretIdentityID"`
 }
 
+type Identity struct {
+	ID       int    `json:"id"`
+	RealName string `json:"realName"`
+}
+
 var heroes = []Hero{
 	{"batman", 1},
 	{"superman", 2},
+}
+
+var identities = []Identity{
+	{1, "Bruce Wayne"},
+	{2, "Kalel"},
 }
 
 func newDataCollector(brokerList []string) sarama.SyncProducer {
@@ -41,12 +51,25 @@ func newDataCollector(brokerList []string) sarama.SyncProducer {
 	return producer
 }
 
-func main() {
-	producer := newDataCollector([]string{"localhost:9092"})
+func createIdentities(producer sarama.SyncProducer) {
+	for _, h := range identities {
+		jsonMsg, err := json.Marshal(h)
+		if err != nil {
+			panic(err)
+		}
+		_, _, err = producer.SendMessage(&sarama.ProducerMessage{
+			Topic: "identities",
+			Value: sarama.StringEncoder(jsonMsg),
+		})
+		if err != nil {
+			fmt.Printf("Error: %v\n", err)
+		} else {
+			fmt.Printf("%s written\n", jsonMsg)
+		}
+	}
+}
 
-	fmt.Println("Simple kafka producer")
-	fmt.Println("---------------------")
-
+func createHeroes(producer sarama.SyncProducer) {
 	for _, h := range heroes {
 		jsonMsg, err := json.Marshal(h)
 		if err != nil {
@@ -62,4 +85,14 @@ func main() {
 			fmt.Printf("%s written\n", jsonMsg)
 		}
 	}
+}
+
+func main() {
+	producer := newDataCollector([]string{"localhost:9092"})
+
+	fmt.Println("Simple kafka producer")
+	fmt.Println("---------------------")
+
+	createHeroes(producer)
+	createIdentities(producer)
 }

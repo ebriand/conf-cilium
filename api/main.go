@@ -33,11 +33,11 @@ func heroesToNames(heroes []types.Hero) []string {
 	return names
 }
 
-func getHeroes() []Hero {
+func getHeroes() []types.Hero {
 	return heroes
 }
 
-func getHeroByName(name string) (*Hero, error) {
+func getHeroByName(name string) (*types.Hero, error) {
 	for _, h := range getHeroes() {
 		if name == h.Name {
 			return &h, nil
@@ -100,48 +100,27 @@ func ReadyHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // Consumer represents a Sarama consumer group consumer
-type Consumer struct{}
+type Consumer func(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error
 
 // Setup is run at the beginning of a new session, before ConsumeClaim
-func (consumer *Consumer) Setup(sarama.ConsumerGroupSession) error {
+func (consumer Consumer) Setup(sarama.ConsumerGroupSession) error {
 	return nil
 }
 
 // Cleanup is run at the end of a session, once all ConsumeClaim goroutines have exited
-func (consumer *Consumer) Cleanup(sarama.ConsumerGroupSession) error {
+func (consumer Consumer) Cleanup(sarama.ConsumerGroupSession) error {
 	return nil
 }
 
 // ConsumeClaim must start a consumer loop of ConsumerGroupClaim's Messages().
-func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
-
-	// NOTE:
-	// Do not move the code below to a goroutine.
-	// The `ConsumeClaim` itself is called within a goroutine, see:
-	// https://github.com/Shopify/sarama/blob/master/consumer_group.go#L27-L29
-	for message := range claim.Messages() {
-		fmt.Printf("New message: %v\n", message)
-		var h Hero
-		err := json.Unmarshal(message.Value, &h)
-		if err != nil {
-			fmt.Printf("Unable to parse msg: %v\n", message.Value)
-		} else {
-			fmt.Printf("Adding hero: %v", h)
-			heroes = append(heroes, h)
-		}
-	}
-
-	return nil
+func (consumer Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
+	return consumer(session, claim)
 }
 
-func syncHeroesFromKafka() {
-
-	topic := "heroes"
+func syncEntityFromKafka(topic string, consumer *Consumer) {
 	config := sarama.NewConfig()
 	config.Version, _ = sarama.ParseKafkaVersion(version)
 	config.Consumer.Offsets.Initial = sarama.OffsetOldest
-
-	consumer := Consumer{}
 
 	ctx := context.Background()
 	client, err := sarama.NewConsumerGroup(strings.Split(brokers, ","), group, config)
@@ -151,12 +130,50 @@ func syncHeroesFromKafka() {
 
 	go func() {
 		for {
-			err := client.Consume(ctx, []string{topic}, &consumer)
+			err := client.Consume(ctx, []string{topic}, consumer)
 			if err != nil {
 				panic(err)
 			}
 		}
 	}()
+}
+
+func syncIdentitiesFromKafka() {
+	topic := "identities"
+	identityConsumer := Consumer(func(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
+		for message := range claim.Messages() {
+			fmt.Printf("New message: %v\n", message)
+			var i types.Identity
+			err := json.Unmarshal(message.Value, &i)
+			if err != nil {
+				fmt.Printf("Unable to parse msg: %v\n", message.Value)
+			} else {
+				fmt.Printf("Adding identity: %v", i)
+				identities = append(identities, i)
+			}
+		}
+		return nil
+	})
+	syncEntityFromKafka(topic, &identityConsumer)
+}
+
+func syncHeroesFromKafka() {
+	topic := "heroes"
+	heroConsumer := Consumer(func(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
+		for message := range claim.Messages() {
+			fmt.Printf("New message: %v\n", message)
+			var h types.Hero
+			err := json.Unmarshal(message.Value, &h)
+			if err != nil {
+				fmt.Printf("Unable to parse msg: %v\n", message.Value)
+			} else {
+				fmt.Printf("Adding hero: %v", h)
+				heroes = append(heroes, h)
+			}
+		}
+		return nil
+	})
+	syncEntityFromKafka(topic, &heroConsumer)
 }
 
 func init() {
@@ -174,7 +191,8 @@ func main() {
 	r.HandleFunc("/ready", ReadyHandler).Methods("GET")
 	http.Handle("/", r)
 
-	go syncHeroesFromKafka()
+	syncHeroesFromKafka()
+	syncIdentitiesFromKafka()
 
 	err := http.ListenAndServe(":80", nil)
 	if err != nil {
