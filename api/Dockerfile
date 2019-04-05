@@ -5,7 +5,7 @@ WORKDIR /go/api
 COPY go.mod go.sum ./
 RUN go mod download
 
-COPY main.go .
+COPY . .
 RUN CGO_ENABLED=0 go build -o heroes-api .
 
 FROM scratch

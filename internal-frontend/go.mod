@@ -1,4 +1,4 @@
-module github.com/ebriand/conf-cilium/api
+module github.com/ebriand/conf-cilium/internal-frontend
 
 go 1.12
 
