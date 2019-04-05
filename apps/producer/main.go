@@ -6,24 +6,15 @@ import (
 	"log"
 
 	"github.com/Shopify/sarama"
+	"github.com/ebriand/conf-cilium/types"
 )
 
-type Hero struct {
-	Name             string `json:"name"`
-	SecretIdentityID int    `json:"secretIdentityID"`
-}
-
-type Identity struct {
-	ID       int    `json:"id"`
-	RealName string `json:"realName"`
-}
-
-var heroes = []Hero{
+var heroes = []types.Hero{
 	{"batman", 1},
 	{"superman", 2},
 }
 
-var identities = []Identity{
+var identities = []types.Identity{
 	{1, "Bruce Wayne"},
 	{2, "Kalel"},
 }
