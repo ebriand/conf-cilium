@@ -23,6 +23,9 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 80
+        env:
+        - name: KAFKA_BROKERS
+          value: my-cluster-kafka-brokers.default:9092
         livenessProbe:
           httpGet:
             path: /health
