@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: internal-frontend
+    team: internal
+  name: internal-frontend
+  namespace: internal
+spec:
+  selector:
+    matchLabels:
+      app: internal-frontend
+      team: internal
+  template:
+    metadata:
+      labels:
+        app: internal-frontend
+        team: internal
+    spec:
+      containers:
+      - name: internal-frontend
+        image: ebriand/conf-cilium-internal-frontend:0.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: API_URL
+          value: http://heroes-api.api
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 80

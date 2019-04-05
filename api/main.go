@@ -3,33 +3,25 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
+	"github.com/ebriand/conf-cilium/types"
 	"github.com/gorilla/mux"
 )
 
-type Hero struct {
-	Name             string `json:"name"`
-	SecretIdentityID int    `json:"secretIdentityID"`
+var heroes = []types.Hero{
+	{Name: "batman", SecretIdentityID: 1},
+	{Name: "superman", SecretIdentityID: 2},
 }
 
-type Identity struct {
-	ID       int    `json:"id"`
-	RealName string `json:"realName"`
+var identities = []types.Identity{
+	{ID: 1, RealName: "Bruce Wayne"},
+	{ID: 2, RealName: "Kalel"},
 }
 
-var heroes = []Hero{
-	{"batman", 1},
-	{"superman", 2},
-}
-
-var identities = []Identity{
-	{1, "Bruce Wayne"},
-	{2, "Kalel"},
-}
-
-func heroesToNames(heroes []Hero) []string {
+func heroesToNames(heroes []types.Hero) []string {
 	var names = []string{}
 	for _, h := range heroes {
 		names = append(names, h.Name)
@@ -37,7 +29,7 @@ func heroesToNames(heroes []Hero) []string {
 	return names
 }
 
-func getHeroByName(name string) (*Hero, error) {
+func getHeroByName(name string) (*types.Hero, error) {
 	for _, h := range heroes {
 		if name == h.Name {
 			return &h, nil
@@ -46,7 +38,7 @@ func getHeroByName(name string) (*Hero, error) {
 	return nil, fmt.Errorf("hero %s not found", name)
 }
 
-func getIdentityByID(id int) (*Identity, error) {
+func getIdentityByID(id int) (*types.Identity, error) {
 	for _, i := range identities {
 		if id == i.ID {
 			return &i, nil
@@ -107,5 +99,5 @@ func main() {
 	r.HandleFunc("/health", HealthHandler).Methods("GET")
 	r.HandleFunc("/ready", ReadyHandler).Methods("GET")
 	http.Handle("/", r)
-	http.ListenAndServe(":80", nil)
+	log.Fatal(http.ListenAndServe(":80", nil))
 }
