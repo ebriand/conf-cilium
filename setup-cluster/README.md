@@ -25,5 +25,5 @@ sudo mv terraform /usr/local/bin/
 ```shell
 curl -LO https://github.com/adammck/terraform-inventory/releases/download/v0.8/terraform-inventory_v0.8_linux_amd64.zip
 unzip terraform-inventory_v0.8_linux_amd64.zip
-sudo terraform-inventory /usr/local/bin/
+sudo mv terraform-inventory /usr/local/bin/
 ```
