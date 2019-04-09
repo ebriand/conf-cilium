@@ -27,7 +27,7 @@ spec:
         - name: API_URL
           value: http://heroes-api.api
         - name: KAFKA_BROKERS
-          value: my-cluster-kafka-brokers.default:9092
+          value: my-cluster-kafka-brokers.kafka:9092
         livenessProbe:
           httpGet:
             path: /health
