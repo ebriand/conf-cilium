@@ -9,17 +9,17 @@
   become: yes
   tasks:
   - name: Test kubeadm already run
-    systemd: 
+    systemd:
       name: kubelet
     register: kubelet_status
   - name: Init cluster
-    command: kubeadm init --pod-network-cidr "{{ pod_cidr }}" --apiserver-cert-extra-sans "{{ inventory_hostname }}"
+    command: kubeadm init --pod-network-cidr "{{ pod_cidr }}" --apiserver-cert-extra-sans="{{ inventory_hostname }},127.0.0.1,localhost"
     when: kubelet_status.status["SubState"] != "running"
   - name: Create ~/.kube
     file:
       path: /home/{{ instance_user }}/.kube
       state: directory
-      mode: 0755    
+      mode: 0755
   - name: Configure kubectl
     copy:
       src: /etc/kubernetes/admin.conf
@@ -28,6 +28,6 @@
   - file:
       path: /home/{{ instance_user }}/.kube/config
       owner: "{{ instance_user }}"
-      mode: 0600      
-    
-    
+      mode: 0600
+
+
