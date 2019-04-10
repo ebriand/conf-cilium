@@ -1,0 +1,25 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-heroes-ro-events-kafka
+  namespace: kafka
+spec:
+  endpointSelector:
+    matchLabels:
+      k8s:strimzi.io/name: my-cluster-kafka
+  ingress:
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: events
+        k8s:team: events
+        k8s:app: events-frontend
+    toPorts:
+    - ports:
+      - port: "9092"
+        protocol: TCP
+      rules:
+        kafka:
+        - role: produce
+          topic: events
+        - role: consume
+          topic: events
