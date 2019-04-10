@@ -1,0 +1,69 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cilium.io/v2","kind":"CiliumNetworkPolicy","metadata":{"annotations":{},"name":"allow-heroes-identity-kafka","namespace":"default"},"spec":{"endpointSelector":{"matchLabels":{"strimzi.io/name":"my-cluster-kafka"}},"ingress":[{"fromEndpoints":[{"matchLabels":{"k8s:io.kubernetes.pod.namespace":"internal"}}],"toPorts":[{"ports":[{"port":"9092","protocol":"TCP"}],"rules":{"kafka":[{"role":"produce","topic":"heroes"},{"role":"consume","topic":"heroes"},{"role":"produce","topic":"identities"},{"role":"consume","topic":"identities"}]}}]}]}}
+  creationTimestamp: "2019-04-08T14:38:43Z"
+  generation: 2
+  name: allow-heroes-identity-kafka
+  namespace: default
+  resourceVersion: "231985"
+  selfLink: /apis/cilium.io/v2/namespaces/default/ciliumnetworkpolicies/allow-heroes-identity-kafka
+  uid: 0211de75-5a0c-11e9-ae5e-42010af0000a
+spec:
+  endpointSelector:
+    matchLabels:
+      strimzi.io/cluster: my-cluster
+  ingress:
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: internal
+    toPorts:
+    - ports:
+      - port: "9092"
+        protocol: TCP
+      rules:
+        kafka:
+        - role: produce
+          topic: heroes
+        - role: consume
+          topic: heroes
+        - role: produce
+          topic: identities
+        - role: consume
+          topic: identities
+status:
+  nodes:
+    controller-0:
+      annotations:
+        kubectl.kubernetes.io/last-applied-configuration: |
+          {"apiVersion":"cilium.io/v2","kind":"CiliumNetworkPolicy","metadata":{"annotations":{},"name":"allow-heroes-identity-kafka","namespace":"default"},"spec":{"endpointSelector":{"matchLabels":{"strimzi.io/name":"my-cluster-kafka"}},"ingress":[{"fromEndpoints":[{"matchLabels":{"k8s:io.kubernetes.pod.namespace":"internal"}}],"toPorts":[{"ports":[{"port":"9092","protocol":"TCP"}],"rules":{"kafka":[{"role":"produce","topic":"heroes"},{"role":"consume","topic":"heroes"},{"role":"produce","topic":"identities"},{"role":"consume","topic":"identities"}]}}]}]}}
+      enforcing: true
+      lastUpdated: "2019-04-09T19:31:01.738477865Z"
+      localPolicyRevision: 28
+      ok: true
+    worker-0:
+      annotations:
+        kubectl.kubernetes.io/last-applied-configuration: |
+          {"apiVersion":"cilium.io/v2","kind":"CiliumNetworkPolicy","metadata":{"annotations":{},"name":"allow-heroes-identity-kafka","namespace":"default"},"spec":{"endpointSelector":{"matchLabels":{"strimzi.io/name":"my-cluster-kafka"}},"ingress":[{"fromEndpoints":[{"matchLabels":{"k8s:io.kubernetes.pod.namespace":"internal"}}],"toPorts":[{"ports":[{"port":"9092","protocol":"TCP"}],"rules":{"kafka":[{"role":"produce","topic":"heroes"},{"role":"consume","topic":"heroes"},{"role":"produce","topic":"identities"},{"role":"consume","topic":"identities"}]}}]}]}}
+      enforcing: true
+      lastUpdated: "2019-04-09T19:31:01.955072804Z"
+      localPolicyRevision: 28
+      ok: true
+    worker-1:
+      annotations:
+        kubectl.kubernetes.io/last-applied-configuration: |
+          {"apiVersion":"cilium.io/v2","kind":"CiliumNetworkPolicy","metadata":{"annotations":{},"name":"allow-heroes-identity-kafka","namespace":"default"},"spec":{"endpointSelector":{"matchLabels":{"strimzi.io/name":"my-cluster-kafka"}},"ingress":[{"fromEndpoints":[{"matchLabels":{"k8s:io.kubernetes.pod.namespace":"internal"}}],"toPorts":[{"ports":[{"port":"9092","protocol":"TCP"}],"rules":{"kafka":[{"role":"produce","topic":"heroes"},{"role":"consume","topic":"heroes"},{"role":"produce","topic":"identities"},{"role":"consume","topic":"identities"}]}}]}]}}
+      enforcing: true
+      lastUpdated: "2019-04-09T19:31:01.752340446Z"
+      localPolicyRevision: 28
+      ok: true
+    worker-2:
+      annotations:
+        kubectl.kubernetes.io/last-applied-configuration: |
+          {"apiVersion":"cilium.io/v2","kind":"CiliumNetworkPolicy","metadata":{"annotations":{},"name":"allow-heroes-identity-kafka","namespace":"default"},"spec":{"endpointSelector":{"matchLabels":{"strimzi.io/name":"my-cluster-kafka"}},"ingress":[{"fromEndpoints":[{"matchLabels":{"k8s:io.kubernetes.pod.namespace":"internal"}}],"toPorts":[{"ports":[{"port":"9092","protocol":"TCP"}],"rules":{"kafka":[{"role":"produce","topic":"heroes"},{"role":"consume","topic":"heroes"},{"role":"produce","topic":"identities"},{"role":"consume","topic":"identities"}]}}]}]}}
+      enforcing: true
+      lastUpdated: "2019-04-09T19:31:01.947420189Z"
+      localPolicyRevision: 18
+      ok: true

@@ -1,0 +1,42 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cilium.io/v2","kind":"CiliumNetworkPolicy","metadata":{"annotations":{},"name":"kafka-policies","namespace":"default"},"specs":[{"endpointSelector":{"matchLabels":{"strimzi.io/name":"my-cluster-kafka"}},"ingress":[{"fromEndpoints":[{"matchLabels":{"k8s:io.kubernetes.pod.namespace":"internal"}}],"toPorts":[{"ports":[{"port":"9092","protocol":"TCP"}],"rules":{"kafka":[{"role":"produce","topic":"heroes"},{"role":"produce","topic":"identities"}]}}]}]},{"endpointSelector":{"matchLabels":{"strimzi.io/name":"my-cluster-kafka"}},"ingress":[{"fromEndpoints":[{"matchLabels":{"k8s:io.kubernetes.pod.namespace":"events"}}],"toPorts":[{"ports":[{"port":"9092","protocol":"TCP"}],"rules":{"kafka":[{"role":"produce","topic":"events"}]}}]}]}]}
+  generation: 1
+  name: kafka-policies
+  selfLink: /apis/cilium.io/v2/namespaces/default/ciliumnetworkpolicies/kafka-policies
+specs:
+- endpointSelector:
+    matchLabels:
+      strimzi.io/name: my-cluster-kafka
+  ingress:
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: internal
+    toPorts:
+    - ports:
+      - port: "9092"
+        protocol: TCP
+      rules:
+        kafka:
+        - role: produce
+          topic: heroes
+        - role: produce
+          topic: identities
+- endpointSelector:
+    matchLabels:
+      strimzi.io/name: my-cluster-kafka
+  ingress:
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: events
+    toPorts:
+    - ports:
+      - port: "9092"
+        protocol: TCP
+      rules:
+        kafka:
+        - role: produce
+          topic: events
