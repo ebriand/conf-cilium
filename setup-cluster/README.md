@@ -27,3 +27,14 @@ curl -LO https://github.com/adammck/terraform-inventory/releases/download/v0.8/t
 unzip terraform-inventory_v0.8_linux_amd64.zip
 sudo mv terraform-inventory /usr/local/bin/
 ```
+
+## Cluster creation
+
+Just launch `./getup.sh`.
+If there is an error during the deployment, just launch again the faulty playbook.
+
+## Cluster interactions
+
+- Grab `/etc/kubernetes/admin.conf` on `controller-0`
+- Replace the server section to point to localhost: `server: https://localhost:6443`
+- Use gcloud to port forward the controller to your local machine: `gcloud compute ssh --ssh-flag="-L 6443:localhost:6443" controller-0`
