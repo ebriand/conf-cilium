@@ -123,6 +123,28 @@ func addEvent(e Event) {
 	}
 }
 
+func isTopicReady(topic string) (bool, error) {
+	config := sarama.NewConfig()
+	config.Version, _ = sarama.ParseKafkaVersion(version)
+	config.Consumer.Offsets.Initial = sarama.OffsetOldest
+
+	ctx := context.Background()
+	client, err := sarama.NewConsumerGroup(strings.Split(brokers, ","), "alive", config)
+	if err != nil {
+		panic(err)
+	}
+	topicTester := Consumer(func(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
+		return nil
+	})
+
+	err = client.Consume(ctx, []string{topic}, topicTester)
+	if err != nil {
+		panic(err)
+	}
+	client.Close()
+	return true, nil
+}
+
 func init() {
 	brokers = os.Getenv("KAFKA_BROKERS")
 	if brokers == "" {
