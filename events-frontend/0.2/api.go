@@ -55,7 +55,7 @@ func getHero(name string) (*types.Hero, error) {
 
 func getIdentity(id uuid.UUID) (*types.Identity, error) {
 	var identity types.Identity
-	for _, i := range identities {
+	for _, i := range getIdentitiesFromKafkaSync() {
 		if i.ID == id {
 			identity = i
 			break

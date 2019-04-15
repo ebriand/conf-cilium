@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/Shopify/sarama"
 	"github.com/ebriand/conf-cilium/types"
@@ -88,25 +89,6 @@ func syncEventsFromKafka() {
 	syncEntityFromKafka(topic, &eventConsumer)
 }
 
-func syncIdentitiesFromKafka() {
-	topic := "identities"
-	identityConsumer := Consumer(func(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
-		for message := range claim.Messages() {
-			fmt.Printf("New message: %v\n", message)
-			var i types.Identity
-			err := json.Unmarshal(message.Value, &i)
-			if err != nil {
-				fmt.Printf("Unable to parse msg: %v\n", message.Value)
-			} else {
-				fmt.Printf("Adding identity: %v\n", i)
-				identities = append(identities, i)
-			}
-		}
-		return nil
-	})
-	syncEntityFromKafka(topic, &identityConsumer)
-}
-
 func addEvent(e Event) {
 	eJSON, err := json.Marshal(e)
 	if err != nil {
@@ -123,26 +105,55 @@ func addEvent(e Event) {
 	}
 }
 
-func isTopicReady(topic string) (bool, error) {
+func getIdentitiesFromKafkaSync() []types.Identity {
+	identities := []types.Identity{}
 	config := sarama.NewConfig()
 	config.Version, _ = sarama.ParseKafkaVersion(version)
 	config.Consumer.Offsets.Initial = sarama.OffsetOldest
-
-	ctx := context.Background()
-	client, err := sarama.NewConsumerGroup(strings.Split(brokers, ","), "alive", config)
-	if err != nil {
-		panic(err)
-	}
-	topicTester := Consumer(func(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
+	identitiesGetter := Consumer(func(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
+		for message := range claim.Messages() {
+			fmt.Printf("New message: %v\n", message)
+			var i types.Identity
+			err := json.Unmarshal(message.Value, &i)
+			if err != nil {
+				fmt.Printf("Unable to parse msg: %v\n", message.Value)
+			} else {
+				fmt.Printf("Adding identity: %v\n", i)
+				identities = append(identities, i)
+			}
+		}
 		return nil
 	})
 
-	err = client.Consume(ctx, []string{topic}, topicTester)
-	if err != nil {
-		panic(err)
-	}
-	client.Close()
-	return true, nil
+	timeout := make(chan bool)
+
+	var client sarama.ConsumerGroup
+
+	defer func() {
+		if client != nil {
+			client.Close()
+		}
+	}()
+
+	go func() {
+		ctx := context.Background()
+		var err error
+		client, err = sarama.NewConsumerGroup(strings.Split(brokers, ","), "identities_sync", config)
+		if err != nil {
+			panic(err)
+		}
+
+		err = client.Consume(ctx, []string{"identities"}, identitiesGetter)
+		if err != nil {
+			panic(err)
+		}
+	}()
+	go func() {
+		time.Sleep(2 * time.Second)
+		timeout <- true
+	}()
+	<-timeout
+	return identities
 }
 
 func init() {
