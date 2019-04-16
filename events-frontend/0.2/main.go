@@ -86,17 +86,6 @@ func eventDetailHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
-	_, err := isTopicReady("events")
-	if err != nil {
-		log.Print(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-
-	_, err = isTopicReady("identities")
-	if err != nil {
-		log.Print(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
 	w.WriteHeader(http.StatusNoContent)
 }
 
@@ -120,7 +109,6 @@ func main() {
 	producer = newProducer()
 
 	syncEventsFromKafka()
-	syncIdentitiesFromKafka()
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", indexHandler).Methods("GET")
