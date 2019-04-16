@@ -1,3 +1,4 @@
 apps/zk-single-kafka-single
 apps/producer/producer
 api/api
+*.DS_Store

@@ -1,6 +1,20 @@
-<html>
-<body>
-{{.Hero.Name}}<br/>
-{{.Identity.RealName}}
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Hero Detail</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+  </head>
+
+  <body class="text-center">
+    <div class="container">
+      <div class="py-5 text-center">
+        <img class="d-block mx-auto mb-4" src="../assets/pow-1601674_1280.png"  width="200">
+        <h2>{{.Hero.Name}}</h2>
+        <p class="lead">{{.Identity.RealName}}</p>
+      </div>
+    </div>
+  </body>
 </html>

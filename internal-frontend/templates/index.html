@@ -1,13 +1,24 @@
-<html>
-<body>
-<form action="/login" method="POST">
-  <label for="uname"><b>Username</b></label>
-  <input type="text" placeholder="Enter Username" name="uname" required>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <label for="psw"><b>Password</b></label>
-  <input type="password" placeholder="Enter Password" name="psw" required>
+    <title>Identification</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    <link href="assets/index.css" rel="stylesheet">
+  </head>
 
-  <button type="submit">Login</button>
-</form>
-</body>
+  <body class="text-center">
+    <form class="form-signin" action="/login" method="POST">
+      <img class="mb-4" src="assets/SHIELD_S4.png" alt="S.H.I.E.L.D." width="72" height="72">
+      <h1 class="h3 mb-3 font-weight-normal">Identification</h1>
+      <label for="username" class="sr-only">Username</label>
+      <input type="text" id="username" class="form-control" placeholder="Enter username" required autofocus>
+      <label for="inputPassword" class="sr-only">Password</label>
+      <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+      <button class="btn btn-lg btn-outline-primary btn-block" type="submit">Login</button>
+      <p class="mt-5 mb-3 text-muted">&copy; 2019 S.H.I.E.L.D.</p>
+    </form>
+  </body>
 </html>

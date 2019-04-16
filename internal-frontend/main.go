@@ -106,6 +106,7 @@ func main() {
 	r.HandleFunc("/heroes/{name}", heroDetailHandler).Methods("GET")
 	r.HandleFunc("/health", healthHandler).Methods("GET")
 	r.HandleFunc("/ready", readyHandler).Methods("GET")
+	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("assets"))))
 	http.Handle("/", r)
 	log.Fatal(http.ListenAndServe(":80", nil))
 }
