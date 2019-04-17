@@ -3,3 +3,4 @@ apps/producer/producer
 api/api
 *.DS_Store
 *.log
+marvel-secret.yaml
