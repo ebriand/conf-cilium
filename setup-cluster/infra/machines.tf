@@ -84,7 +84,6 @@ resource "google_compute_instance" "worker" {
   tags = ["kubeadm","worker"]
   
   scheduling {
-  	preemptible         = true
     automatic_restart   = false
   }
   
@@ -128,7 +127,6 @@ resource "google_compute_instance" "controller" {
   tags = ["kubeadm","controller"]
   
   scheduling {
-  	preemptible         = true
     automatic_restart   = false
   }
   
