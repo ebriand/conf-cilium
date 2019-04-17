@@ -103,9 +103,11 @@ func readyHandler(w http.ResponseWriter, r *http.Request) {
 func init() {
 	indexTemplate = template.Must(template.ParseFiles("templates/index.html"))
 	detailTemplate = template.Must(template.ParseFiles("templates/detail.html"))
+
 }
 
 func main() {
+	log.Printf("Starting events webapp")
 	producer = newProducer()
 
 	syncEventsFromKafka()
