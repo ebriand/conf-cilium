@@ -57,7 +57,7 @@ func getIdentityByID(id uuid.UUID) (*types.Identity, error) {
 
 func HeroesHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(heroesToNames(getHeroes()))
+	json.NewEncoder(w).Encode(getHeroes())
 }
 
 func HeroHandler(w http.ResponseWriter, r *http.Request) {

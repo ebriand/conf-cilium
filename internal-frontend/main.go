@@ -18,7 +18,7 @@ var (
 )
 
 type heroesData struct {
-	Heroes []string
+	Heroes []types.Hero
 }
 
 type detailData struct {
@@ -51,9 +51,17 @@ func heroAddHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	var h types.Hero
 	var i types.Identity
+	name := r.FormValue("name")
 
 	i = types.Identity{ID: uuid.New(), RealName: r.FormValue("identity")}
-	h = types.Hero{Name: r.FormValue("name"), SecretIdentityID: i.ID}
+	h = types.Hero{Name: name, SecretIdentityID: i.ID}
+	imgURL, err := getHeroImage(name)
+	if err != nil {
+		log.Printf("Image not found for %s. Err is: %v", name, err)
+		h.ImageURL = "/assets/pow-1601674_1280.png"
+	} else {
+		h.ImageURL = imgURL
+	}
 
 	addHero(h, i)
 

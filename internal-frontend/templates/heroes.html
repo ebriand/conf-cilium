@@ -40,12 +40,12 @@
             {{range .Heroes}}
             <div class="col-md-4">
               <div class="card mb-4 box-shadow">
-                <a href="/heroes/{{.}}"><img style="width: 200px;" class="card-img-top" src="assets/pow-1601674_1280.png" alt="Card image cap"></a>
+                <a href="/heroes/{{.Name}}"><img style="width: 200px;" class="card-img-top" src="{{.ImageURL}}" alt="Card image cap"></a>
                 <div class="card-body">
-                  <p class="card-text">{{.}}</p>
+                  <p class="card-text">{{.Name}}</p>
                   <div class="d-flex justify-content-center align-items-center">
                     <div class="btn-group">
-                      <a class="btn btn-sm btn-outline-secondary" href="/heroes/{{.}}" role="button">View</a>
+                      <a class="btn btn-sm btn-outline-secondary" href="/heroes/{{.Name}}" role="button">View</a>
                     </div>
                   </div>
                 </div>

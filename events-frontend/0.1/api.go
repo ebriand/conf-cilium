@@ -29,12 +29,17 @@ func getHeroesName() ([]string, error) {
 		return nil, err
 	}
 
-	var heroes []string
+	var heroes []Hero
 	err = json.Unmarshal(body, &heroes)
 	if err != nil {
 		return nil, err
 	}
-	return heroes, nil
+
+	var heroesNames []string
+	for _, h := range heroes {
+		heroesNames = append(heroesNames, h.Name)
+	}
+	return heroesNames, nil
 }
 
 func getHero(name string) (*types.Hero, error) {

@@ -16,7 +16,7 @@ func api(resource string) string {
 	return apiURL + "/" + resource
 }
 
-func getHeroesName() ([]string, error) {
+func getHeroesName() ([]types.Hero, error) {
 	url := api("heroes")
 	resp, err := http.Get(url)
 	if err != nil {
@@ -29,7 +29,7 @@ func getHeroesName() ([]string, error) {
 		return nil, err
 	}
 
-	var heroes []string
+	var heroes []types.Hero
 	err = json.Unmarshal(body, &heroes)
 	if err != nil {
 		return nil, err
