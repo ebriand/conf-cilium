@@ -11,5 +11,6 @@ RUN CGO_ENABLED=0 go build -o events-frontend .
 FROM scratch
 COPY --from=0 /go/frontend/events-frontend /events-frontend
 COPY templates templates
+COPY assets assets
 EXPOSE 80
 ENTRYPOINT ["/events-frontend"]

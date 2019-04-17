@@ -1,21 +1,31 @@
-<html>
-<body>
-<ul>Events:
-{{range .Events}}
-  <li><a href="/events/{{.ID}}">{{.Name}}</a></li>
-{{end}}
-</ul>
-<form action="/events" method="POST">
-  <label for="name"><b>Event name</b></label>
-  <input type="text" placeholder="Enter event name" name="name" required>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <select name="heroes" multiple>
-  {{range .Heroes}}
-    <option value="{{.}}">{{.}}</option>
-  {{end}}
-  </select>
+    <title>Heroes</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    <link href="assets/heroes.css" rel="stylesheet">
+  </head>
 
-  <button type="submit">add</button>
-</form>
-</body>
+  <body class="text-center">
+    <ul>Events:
+    {{range .Events}}
+      <li><a href="/events/{{.ID}}">{{.Name}}</a></li>
+    {{end}}
+    </ul>
+    <form action="/events" method="POST">
+      <label for="name"><b>Event name</b></label>
+      <input type="text" placeholder="Enter event name" name="name" required>
+
+      <select name="heroes" multiple>
+      {{range .Heroes}}
+        <option value="{{.}}">{{.}}</option>
+      {{end}}
+      </select>
+
+      <button type="submit">add</button>
+    </form>
+  </body>
 </html>
