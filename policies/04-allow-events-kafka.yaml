@@ -1,7 +1,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: allow-heroes-ro-events-kafka
+  name: allow-events-kafka
   namespace: kafka
 spec:
   endpointSelector:

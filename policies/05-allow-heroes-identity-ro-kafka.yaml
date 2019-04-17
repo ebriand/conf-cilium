@@ -1,0 +1,24 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-heroes-identity-ro-kafka
+  namespace: kafka
+spec:
+  endpointSelector:
+    matchLabels:
+      app: kafka
+  ingress:
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: api
+        team: api
+    toPorts:
+    - ports:
+      - port: "9092"
+        protocol: TCP
+      rules:
+        kafka:
+        - role: consume
+          topic: heroes
+        - role: consume
+          topic: identities
