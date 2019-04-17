@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+killall watch
+
 watch "gcloud compute ssh --ssh-flag=\"-L 6443:localhost:6443 -N\" --zone europe-west1-c controller-0" 2>&1 > gcloud.log &
 echo "Forwarding distant cluster to :6443"
 
