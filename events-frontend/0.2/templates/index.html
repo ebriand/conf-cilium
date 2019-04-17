@@ -1,21 +1,63 @@
-<html>
-<body>
-<ul>Events:
-{{range .Events}}
-  <li><a href="/events/{{.ID}}">{{.Name}}</a></li>
-{{end}}
-</ul>
-<form action="/events" method="POST">
-  <label for="name"><b>Event name</b></label>
-  <input type="text" placeholder="Enter event name" name="name" required>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <select name="heroes" multiple>
-  {{range .Heroes}}
-    <option value="{{.}}">{{.}}</option>
-  {{end}}
-  </select>
+    <title>Events</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    <link href="assets/index.css" rel="stylesheet">
+  </head>
 
-  <button type="submit">add</button>
-</form>
-</body>
+  <body class="text-center">
+    <main role="main">
+      <section class="jumbotron text-center">
+        <div class="container">
+          <h1 class="jumbotron-heading">Events</h1>
+        </div>
+      </section>
+  
+      <div class="album py-5 bg-light">
+        <div class="container">
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow">
+                <div class="card-body">
+                  <p class="card-text"><strong>New Event</strong></p>
+                  <div class="d-flex justify-content-center align-items-center">
+                    <form class="add-heroes" action="/events" method="POST">
+                      <label for="name" class="sr-only">Event name</label>
+                      <input type="text" name="name" class="form-control" placeholder="Name" required>
+                      <select name="heroes" multiple class="form-control">
+                      {{range .Heroes}}
+                        <option value="{{.}}">{{.}}</option>
+                      {{end}}
+                      </select>
+                      <button class="btn btn-lg btn-outline-primary btn-block" type="submit">Add</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {{range .Events}}
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow">
+                <a href="/events/{{.ID}}"><img style="width: 200px;" class="card-img-top" src="assets/pow-1601674_1280.png" alt="Card image cap"></a>
+                <div class="card-body">
+                  <p class="card-text">{{.Name}}</p>
+                  <div class="d-flex justify-content-center align-items-center">
+                    <div class="btn-group">
+                      <a class="btn btn-sm btn-outline-secondary" href="/events/{{.ID}}" role="button">View</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {{end}}
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
 </html>
