@@ -5,6 +5,7 @@ import "github.com/google/uuid"
 type Hero struct {
 	Name             string    `json:"name"`
 	SecretIdentityID uuid.UUID `json:"secretIdentityID"`
+	ImageURL         string    `json:"image_url"`
 }
 
 type Identity struct {
