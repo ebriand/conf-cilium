@@ -136,6 +136,13 @@ func getIdentitiesFromKafkaSync() []types.Identity {
 	}()
 
 	go func() {
+
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Println("Recovered in f", r)
+			}
+		}()
+
 		ctx := context.Background()
 		var err error
 		client, err = sarama.NewConsumerGroup(strings.Split(brokers, ","), "identities_sync", config)
