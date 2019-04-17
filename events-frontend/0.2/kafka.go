@@ -50,6 +50,7 @@ func (consumer Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim
 }
 
 func syncEntityFromKafka(topic string, consumer *Consumer) {
+	log.Printf("Starting to sync %s topic from kafka", topic)
 	config := sarama.NewConfig()
 	config.Version, _ = sarama.ParseKafkaVersion(version)
 	config.Consumer.Offsets.Initial = sarama.OffsetOldest
@@ -71,6 +72,7 @@ func syncEntityFromKafka(topic string, consumer *Consumer) {
 }
 
 func syncEventsFromKafka() {
+	log.Printf("Entering syncEventsFromKafka")
 	topic := "events"
 	eventConsumer := Consumer(func(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
 		for message := range claim.Messages() {
@@ -136,6 +138,13 @@ func getIdentitiesFromKafkaSync() []types.Identity {
 	}()
 
 	go func() {
+
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Println("Recovered in f", r)
+			}
+		}()
+
 		ctx := context.Background()
 		var err error
 		client, err = sarama.NewConsumerGroup(strings.Split(brokers, ","), "identities_sync", config)
