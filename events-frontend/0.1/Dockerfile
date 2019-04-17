@@ -8,7 +8,8 @@ RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 go build -o events-frontend .
 
-FROM scratch
+FROM debian:9
+RUN apt update && apt install -y curl
 COPY --from=0 /go/frontend/events-frontend /events-frontend
 COPY templates templates
 COPY assets assets
