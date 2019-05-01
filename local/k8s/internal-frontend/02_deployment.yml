@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: internal-frontend
+    team: internal
+  name: internal-frontend
+  namespace: internal
+spec:
+  selector:
+    matchLabels:
+      app: internal-frontend
+      team: internal
+  template:
+    metadata:
+      labels:
+        app: internal-frontend
+        team: internal
+    spec:
+      containers:
+      - name: internal-frontend
+        image: docker.io/ebriand/conf-cilium-internal-frontend
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: API_URL
+          value: http://heroes-api.api
+        - name: KAFKA_BROKERS
+          value: kafka-service.kafka:9092
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+        envFrom:
+          - secretRef:
+              name: marvel-secret
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 80

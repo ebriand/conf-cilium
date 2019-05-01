@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: heroes-api
+    team: api
+  name: heroes-api
+  namespace: api
+spec:
+  selector:
+    matchLabels:
+      app: heroes-api
+      team: api
+  template:
+    metadata:
+      labels:
+        app: heroes-api
+        team: api
+    spec:
+      containers:
+      - name: heroes-api
+        image: docker.io/ebriand/conf-cilium-heroes-api
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: KAFKA_BROKERS
+          value: kafka-service.kafka:9092
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 80

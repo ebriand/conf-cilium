@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: events-frontend
+    team: events
+  name: events-frontend
+  namespace: events
+spec:
+  selector:
+    matchLabels:
+      app: events-frontend
+      team: events
+  template:
+    metadata:
+      labels:
+        app: events-frontend
+        team: events
+    spec:
+      containers:
+      - name: events-frontend
+        image: docker.io/ebriand/conf-cilium-events-frontend
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: API_URL
+          value: http://heroes-api.api
+        - name: KAFKA_BROKERS
+          value: kafka-service.kafka:9092
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 80

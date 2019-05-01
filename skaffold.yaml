@@ -1,0 +1,23 @@
+apiVersion: skaffold/v1beta9
+kind: Config
+build:
+  artifacts:
+  - image: docker.io/ebriand/conf-cilium-heroes-api
+    context: api
+    sync:
+      'api/**': .
+  - image: docker.io/ebriand/conf-cilium-internal-frontend
+    context: internal-frontend
+    sync:
+      'internal-frontend/**': .
+  - image: docker.io/ebriand/conf-cilium-events-frontend
+    context: events-frontend/0.2
+    sync:
+      'events-frontend/0.2/**': .
+  local:
+    useDockerCLI: true
+    useBuildkit: true
+deploy:
+  kubectl:
+    manifests:
+    - "local/k8s/**"
