@@ -3,6 +3,11 @@
 ansible + terraform to bootstrap a 1 controller + 3 worker kubernetes cluster
 
 You should be able to use this once you're logged on GCP with `gcloud auth login` or directly on Google Cloud Shell.
+You should also define two environment variables:
+```shell
+export GOOGLE_APPLICATION_CREDENTIALS=<PATH_TO_YOUR_ADC_JSON_FILE>
+export GOOGLE_CLOUD_PROJECT=<YOUR_PROJECT>
+```
 
 ## Pre-requisites
 
