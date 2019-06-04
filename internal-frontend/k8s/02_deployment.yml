@@ -28,6 +28,9 @@ spec:
           value: http://heroes-api.api
         - name: KAFKA_BROKERS
           value: kafka-service.kafka:9092
+        envFrom:
+        - secretRef:
+            name: marvel-secret
         livenessProbe:
           httpGet:
             path: /health
